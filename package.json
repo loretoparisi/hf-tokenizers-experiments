@@ -1,0 +1,34 @@
+{
+  "name": "hf-tokenizers-experiments",
+  "description": "Huggingface Tokenizers Experiments",
+  "version": "0.0.1",
+  "homepage": "https://github.com/loretoparisi/hf-tokenizers-experiments",
+  "author": {
+    "name": "Loreto Parisi",
+    "email": "loretoparisi@gmail.com"
+  },
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:loretoparisi/hf-tokenizers-experiments.git"
+  },
+  "bugs": {
+    "url": "https://github.com/loretoparisi/hf-tokenizers-experiments/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/loretoparisi/hf-tokenizers-experiments/blob/main/LICENSE"
+    }
+  ],
+  "main": "main",
+  "engines": {
+    "node": "*"
+  },
+  "scripts": {},
+  "devDependencies": {},
+  "keywords": [],
+  "dependencies": {
+    "tokenizers": "0.13.0"
+  }
+}
