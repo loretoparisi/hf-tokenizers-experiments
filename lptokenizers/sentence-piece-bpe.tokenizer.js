@@ -14,9 +14,10 @@ const { nfkcNormalizer } = require("tokenizers/bindings/normalizers");
 const { metaspacePreTokenizer } = require("tokenizers/bindings/pre-tokenizers");
 const { metaspaceDecoder } = require("tokenizers/bindings/decoders");
 const { getTokenContent } = require("tokenizers");
-const models = require("tokenizers/bindings/models");
+const { templateProcessing } = require("tokenizers/bindings/post-processors");
 const { Encoding } = require("tokenizers/implementations/encoding");
-
+const models = require("tokenizers/bindings/models");
+        
 class LPSentencePieceBPETokenizer extends SentencePieceBPETokenizer {
     constructor(tokenizer, configuration) {
         super(tokenizer, configuration);
@@ -62,7 +63,16 @@ class LPSentencePieceBPETokenizer extends SentencePieceBPETokenizer {
         tokenizer.setPreTokenizer(preTokenizer);
         const decoder = metaspaceDecoder(opts.replacement, opts.addPrefixSpace);
         tokenizer.setDecoder(decoder);
-        return new LPSentencePieceBPETokenizer(tokenizer, opts);
+        const instance =  new LPSentencePieceBPETokenizer(tokenizer, opts);
+        instance.setPostProcessor(templateProcessing(
+            "<s> $A </s>",
+            "<s> $A </s> $B:1 </s>:1",
+            [
+                ["<s>", instance.tokenToId("<s>")],
+                ["</s>", instance.tokenToId("</s>")],
+            ],
+        ));
+        return instance;
     }
     async encode(sequence, pair, options) {
         console.log(sequence, pair, options);

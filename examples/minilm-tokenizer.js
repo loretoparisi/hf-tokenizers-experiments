@@ -17,15 +17,6 @@ const { promisify } = require("util");
         vocabFile: "../vocab/minilm/minilm-vocab.json"
         , mergesFile: "../vocab/minilm/minilm-merges.txt"
     });
-    let { templateProcessing } = require("tokenizers/bindings/post-processors");
-    lpTokenizer.setPostProcessor(templateProcessing(
-        "<s> $A </s>",
-        "<s> $A </s> $B:1 </s>:1",
-        [
-            ["<s>", lpTokenizer.tokenToId("<s>")],
-            ["</s>", lpTokenizer.tokenToId("</s>")],
-        ],
-    ));
 
     let encoder = (tokenizer) => promisify(tokenizer.encode.bind(tokenizer))
     let encoderBatch = (tokenizer) => promisify(tokenizer.encodeBatch.bind(tokenizer))
