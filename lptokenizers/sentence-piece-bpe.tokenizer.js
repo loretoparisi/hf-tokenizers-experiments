@@ -16,6 +16,7 @@ const { metaspaceDecoder } = require("tokenizers/bindings/decoders");
 const { getTokenContent } = require("tokenizers");
 const { templateProcessing } = require("tokenizers/bindings/post-processors");
 const { Encoding } = require("tokenizers/implementations/encoding");
+const { TruncationStrategy, TruncationDirection, PaddingDirection } = require("tokenizers/bindings/enums");
 const models = require("tokenizers/bindings/models");
         
 class LPSentencePieceBPETokenizer extends SentencePieceBPETokenizer {
@@ -72,6 +73,11 @@ class LPSentencePieceBPETokenizer extends SentencePieceBPETokenizer {
                 ["</s>", instance.tokenToId("</s>")],
             ],
         ));
+
+        // padding and truncation
+        instance.setPadding({ maxLength: LPSentencePieceBPETokenizer.defaultOptions.maxLength });
+        instance.setTruncation(LPSentencePieceBPETokenizer.defaultOptions.maxLength, { strategy: TruncationStrategy.LongestFirst });
+
         return instance;
     }
     async encode(sequence, pair, options) {
@@ -99,7 +105,8 @@ LPSentencePieceBPETokenizer.defaultOptions = {
     clsToken: "<s>",
     maskToken: "<mask>",
     padToken: "<pad>",
-    sepToken: "</s>"
+    sepToken: "</s>",
+    maxLength: 512
 };
 
 module.exports.LPSentencePieceBPETokenizer = LPSentencePieceBPETokenizer;
