@@ -1,7 +1,10 @@
 # hf-tokenizers-experiments
-Experiments with HuggingFace Tokenizers. Currently we provide customization of the following tokenizers
+Experiments with [HuggingFace Tokenizers](https://github.com/huggingface/tokenizers).
 
 ![hf-experiments-128](https://user-images.githubusercontent.com/163333/117465228-c529e100-af51-11eb-92c4-2dca58b8f0f9.png)
+
+## Tokenizers 
+Currently we provide customization of the following tokenizers
 
 - SentencePiece BPE Tokenizer
 
