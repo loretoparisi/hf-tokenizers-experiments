@@ -23,6 +23,9 @@ const { promisify } = require("util");
     let decoder = (tokenizer) => promisify(tokenizer.decode.bind(tokenizer))
 
     let skipSpecialTokens = true;
+    let addSpecialTokens = true;
+    let isPretokenized = false;
+
     var encode, encodeBatch, decode, encoded, decoded;
 
     encode = encoder(lpTokenizer);
@@ -43,8 +46,12 @@ const { promisify } = require("util");
     console.log(output[0].getTokens());
     console.log(output[1].getTokens());
     console.log(output[1].getAttentionMask());
-
-    encoded = await encode("Hello how are you tonight?");
+    
+    const sentence = "Hello how are you tonight?";
+    encoded = await lpTokenizer.encode(sentence, null, {
+        addSpecialTokens: addSpecialTokens,
+        isPretokenized: isPretokenized
+    });
     console.log("ids ", encoded.getIds());
     console.log("tokens ", encoded.getTokens());
     decoded = await lpTokenizer.decode(encoded.getIds(), skipSpecialTokens);

@@ -75,7 +75,7 @@ class LPSentencePieceBPETokenizer extends SentencePieceBPETokenizer {
         ));
 
         // padding and truncation
-        instance.setPadding({ maxLength: LPSentencePieceBPETokenizer.defaultOptions.maxLength });
+        //instance.setPadding({ maxLength: LPSentencePieceBPETokenizer.defaultOptions.maxLength });
         instance.setTruncation(LPSentencePieceBPETokenizer.defaultOptions.maxLength, { strategy: LPSentencePieceBPETokenizer.defaultOptions.truncationStrategy });
 
         return instance;
