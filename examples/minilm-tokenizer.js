@@ -14,6 +14,7 @@ const { promisify } = require("util");
     const { LPSentencePieceBPETokenizer } = require("../lptokenizers/sentence-piece-bpe.tokenizer");
     
     var lpTokenizer = await LPSentencePieceBPETokenizer.fromOptions({
+        padMaxLength: false,
         vocabFile: "../vocab/minilm/minilm-vocab.json"
         , mergesFile: "../vocab/minilm/minilm-merges.txt"
     });

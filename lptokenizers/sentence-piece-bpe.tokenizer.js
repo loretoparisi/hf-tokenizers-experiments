@@ -75,7 +75,7 @@ class LPSentencePieceBPETokenizer extends SentencePieceBPETokenizer {
         ));
 
         // padding and truncation
-        //instance.setPadding({ maxLength: LPSentencePieceBPETokenizer.defaultOptions.maxLength });
+        if(opts.padMaxLength) instance.setPadding({ maxLength: LPSentencePieceBPETokenizer.defaultOptions.maxLength });
         instance.setTruncation(LPSentencePieceBPETokenizer.defaultOptions.maxLength, { strategy: LPSentencePieceBPETokenizer.defaultOptions.truncationStrategy });
 
         return instance;
@@ -122,6 +122,7 @@ LPSentencePieceBPETokenizer.defaultOptions = {
     padToken: "<pad>",
     sepToken: "</s>",
     maxLength: 512,
+    padMaxLength: true,
     // LongestFirst | OnlyFirst | OnlySecond
     truncationStrategy: TruncationStrategy.LongestFirst
 };
