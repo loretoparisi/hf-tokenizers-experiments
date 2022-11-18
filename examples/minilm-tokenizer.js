@@ -44,4 +44,12 @@ const { promisify } = require("util");
     console.log(output[1].getTokens());
     console.log(output[1].getAttentionMask());
 
+    encoded = await encode("Hello how are you tonight?");
+    console.log("ids ", encoded.getIds());
+    console.log("tokens ", encoded.getTokens());
+    decoded = await lpTokenizer.decode(encoded.getIds(), skipSpecialTokens);
+    console.log("decoded - ", decoded); // hello how are you?
+    decoded = await lpTokenizer.decode(encoded.getIds(), !skipSpecialTokens);
+    console.log("decoded (special tokens)- ", decoded); // hello how are you?
+
 }).call(this);

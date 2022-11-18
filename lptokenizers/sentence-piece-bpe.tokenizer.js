@@ -18,7 +18,7 @@ const { templateProcessing } = require("tokenizers/bindings/post-processors");
 const { Encoding } = require("tokenizers/implementations/encoding");
 const { TruncationStrategy, TruncationDirection, PaddingDirection } = require("tokenizers/bindings/enums");
 const models = require("tokenizers/bindings/models");
-        
+
 class LPSentencePieceBPETokenizer extends SentencePieceBPETokenizer {
     constructor(tokenizer, configuration) {
         super(tokenizer, configuration);
@@ -64,7 +64,7 @@ class LPSentencePieceBPETokenizer extends SentencePieceBPETokenizer {
         tokenizer.setPreTokenizer(preTokenizer);
         const decoder = metaspaceDecoder(opts.replacement, opts.addPrefixSpace);
         tokenizer.setDecoder(decoder);
-        const instance =  new LPSentencePieceBPETokenizer(tokenizer, opts);
+        const instance = new LPSentencePieceBPETokenizer(tokenizer, opts);
         instance.setPostProcessor(templateProcessing(
             "<s> $A </s>",
             "<s> $A </s> $B:1 </s>:1",
@@ -76,18 +76,18 @@ class LPSentencePieceBPETokenizer extends SentencePieceBPETokenizer {
 
         // padding and truncation
         instance.setPadding({ maxLength: LPSentencePieceBPETokenizer.defaultOptions.maxLength });
-        instance.setTruncation(LPSentencePieceBPETokenizer.defaultOptions.maxLength, { strategy: TruncationStrategy.LongestFirst });
+        instance.setTruncation(LPSentencePieceBPETokenizer.defaultOptions.maxLength, { strategy: LPSentencePieceBPETokenizer.defaultOptions.truncationStrategy });
 
         return instance;
     }
     async encode(sequence, pair, options) {
-        console.log(sequence, pair, options);
         const encode = promisify(this.tokenizer.encode.bind(this.tokenizer));
         const rawEncoding = await encode(sequence, pair !== null && pair !== void 0 ? pair : null, options !== null && options !== void 0 ? options : null);
-        return new Encoding(rawEncoding);
+        // LP: return Encoding {} to access getTokens, getIds
+        //const encoded = new Encoding(rawEncoding);
+        return rawEncoding;
     }
     async encodeBatch(sequences, options) {
-        console.log('encodeBatch')
         const encodeBatch = promisify(this.tokenizer.encodeBatch.bind(this.tokenizer));
         const rawEncodings = await encodeBatch(sequences, options);
         return rawEncodings.map((e) => new Encoding(e));
@@ -95,8 +95,23 @@ class LPSentencePieceBPETokenizer extends SentencePieceBPETokenizer {
     async decode(ids, skipSpecialTokens = true) {
         const decode = promisify(this.tokenizer.decode.bind(this.tokenizer));
         const decoded = await decode(ids, skipSpecialTokens);
-        return decoded
+        return decoded;
     };
+}
+/**
+ * Truncate encoded to max length
+ * @param {*} rawEncoding 
+ * @param {*} max_length max length for input sequence defaults to 512
+ * @returns 
+ */
+LPSentencePieceBPETokenizer.prototype.truncate = function (rawEncoding, max_length = 512) {
+    max_length = max_length <= 512 ? max_length : 512;
+    const encoded = new Encoding(rawEncoding);
+    if (encoded.ids.length <= max_length) return rawEncoding;
+    encoded.truncate(max_length);
+    encoded.ids[encoded.ids.length - 1] = this.tokenToId(LPSentencePieceBPETokenizer.defaultOptions.sepToken);
+    encoded.tokens[encoded.ids.length - 1] = LPSentencePieceBPETokenizer.defaultOptions.sepToken;
+    return encoded;
 }
 LPSentencePieceBPETokenizer.defaultOptions = {
     addPrefixSpace: true,
@@ -106,7 +121,9 @@ LPSentencePieceBPETokenizer.defaultOptions = {
     maskToken: "<mask>",
     padToken: "<pad>",
     sepToken: "</s>",
-    maxLength: 512
+    maxLength: 512,
+    // LongestFirst | OnlyFirst | OnlySecond
+    truncationStrategy: TruncationStrategy.LongestFirst
 };
 
 module.exports.LPSentencePieceBPETokenizer = LPSentencePieceBPETokenizer;
