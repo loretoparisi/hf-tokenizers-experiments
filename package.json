@@ -29,6 +29,6 @@
   "devDependencies": {},
   "keywords": [],
   "dependencies": {
-    "tokenizers": "0.13.0"
+    "tokenizers": "0.13.3"
   }
 }
